@@ -1,5 +1,7 @@
 #!/bin/bash
 
+host="server.internext.local"
+
 #### FUNCIONES MENÚ #####
 title(){
 	
@@ -36,8 +38,8 @@ case $anteriormente in
 ssh root@server.internext.local -tt "/usr/local/internext/scripts-local.sh"
 ;;
 [nN])
-ssh root@server.internext.local "#!/bin/bash && if [ ! -x /usr/local/internext/scripts-local.sh ] && then && mkdir -p /usr/local/internext/ && curl -O https://raw.githubusercontent.com/Juan-A/internext-script/master/scripts-local.sh && mv scripts-local.sh /usr/local/internext/scripts-local.sh && chmod +x /usr/local/internext/scripts-local.sh && fi"
-ssh root@server.internext.local -tt "/usr/local/internext/scripts-local.sh" #SI es la primera vez, he de introducir la password dos veces.
+ssh root@$host "#!/bin/bash && if [ ! -x /usr/local/internext/scripts-local.sh ] && then && mkdir -p /usr/local/internext/ && curl -O https://raw.githubusercontent.com/Juan-A/internext-script/master/scripts-local.sh && mv scripts-local.sh /usr/local/internext/scripts-local.sh && chmod +x /usr/local/internext/scripts-local.sh && fi"
+ssh root@$host -tt "/usr/local/internext/scripts-local.sh" #SI es la primera vez, he de introducir la password dos veces.
 ;;
 
 *)
