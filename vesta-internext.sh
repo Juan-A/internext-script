@@ -1,6 +1,6 @@
 #!/bin/bash
 
-host="server.internext.local"
+host="172.16.16.17"
 
 #### FUNCIONES MENÚ #####
 title(){
@@ -35,7 +35,7 @@ electrem(){
 read -p "¿Has ejecutado anteriormente este script en la instalación ? [Ss / Nn ]" anteriormente #Esto descarga el script de automatización en el servidor, de no estarlo, en cualquier caso, sólo debemos seleccionar NO una única vez.
 case $anteriormente in
 [sS])
-ssh root@server.internext.local -tt "/usr/local/internext/scripts-local.sh"
+ssh root@$host -tt "/usr/local/internext/scripts-local.sh" #Fuerzo una terminal remota integrada en la consola local.
 ;;
 [nN])
 ssh root@$host "#!/bin/bash && if [ ! -x /usr/local/internext/scripts-local.sh ] && then && mkdir -p /usr/local/internext/ && curl -O https://raw.githubusercontent.com/Juan-A/internext-script/master/scripts-local.sh && mv scripts-local.sh /usr/local/internext/scripts-local.sh && chmod +x /usr/local/internext/scripts-local.sh && fi"
