@@ -61,7 +61,7 @@ exportusuarios(){
     echo ""
     read -p "Pulsar intro para continuar [CTRL + C -> Salida del script.]..."
     echo ""
-    cuentalin=$( /usr/local/vesta/bin/v-list-sys-users | wc -l )
+    cuentalin=$( /usr/local/vesta/bin/v-list-sys-users | wc -l ) ##Cuento el número total de líneas y elimino siempre las dos primeras.
     cuentausuarios=$(( $cuentalin-2 ))
     ##Lista usuarios -> /usr/local/vesta/bin/v-list-sys-users | tail -n$cuentausuarios  
     
@@ -115,7 +115,7 @@ importusuarios(){
     
     
     
-    if [ ! -f /backup/$nombrebck ]
+    if [ ! -f /backup/$nombrebck ] #Busco el backup y compruebo que existe.
     then
         read -p "El archivo introducido no existe. [Intro Para volver al menú]"
         
@@ -151,7 +151,7 @@ crearusuarioalumno(){
         menu
     fi
     
-    while [ $numusers -ge 1 ]
+    while [ $numusers -ge 1 ] 
     do
         /usr/local/vesta/bin/v-add-user alumno$numusers.$sufijo $pdefecto mail.invalid@internext.local Alumnos $sufijo
         numusers=$(( $numusers-1 ))
@@ -170,10 +170,10 @@ eliminarusuariosufijo(){
 
         #ALUMNOS ELIMINAR
             echo "----------------Sufijos/Grupos---------------------"
-            /usr/local/vesta/bin/v-list-sys-users | tail -n$quitarprimeras | egrep ^alumno[0-9]+ | cut -d. -f2 | uniq
-            cuentaalumnos=$( /usr/local/vesta/bin/v-list-sys-users | tail -n$quitarprimeras | egrep ^alumno[0-9]+ | cut -d. -f2 | wc -l )
+            /usr/local/vesta/bin/v-list-sys-users | tail -n$quitarprimeras | egrep ^alumno[0-9]+ | cut -d. -f2 | uniq #Obtengo todos los usuarios, y obtengo los grupos de usuarios.
+            cuentaalumnos=$( /usr/local/vesta/bin/v-list-sys-users | tail -n$quitarprimeras | egrep ^alumno[0-9]+ | cut -d. -f2 | wc -l ) #Cuento el número de grupos, resto las dos primeras líneas.
             
-            if [  $cuentaalumnos -eq 0 ]
+            if [  $cuentaalumnos -eq 0 ] 
             then
                 echo "No existen grupos."
                 read -p "Pulse intro para volver al menú."
@@ -185,16 +185,16 @@ eliminarusuariosufijo(){
             cuentaalumnosdegrupo=$( /usr/local/vesta/bin/v-list-sys-users | tail -n$quitarprimeras | egrep *$grupoeliminar$ | cut -d. -f2 | wc -l )
             
             
-            if [[ $grupoeliminar = $grupodisponible  ]]
+            if [[ $grupoeliminar = $grupodisponible  ]] #Compruebo que el grupo introducido por entrada existe en la lista, y procedo.
             then
                 cuentaalumnosdegrupo=$( /usr/local/vesta/bin/v-list-sys-users | tail -n$quitarprimeras | egrep *$grupoeliminar$ | cut -d. -f2 | wc -l )
-                
+                #Cuento los alumnos para crear un bucle que me permita borrar usuario por usuario.
                 echo "OK..."
                 read -p "¿Seguro que desea eliminar el grupo $grupoeliminar? [Ss/Nn] -> " confirmacion
                 case $confirmacion in
                     [Ss])
                         selectalumno=1
-                        while [ $selectalumno -le $cuentaalumnosdegrupo ]
+                        while [ $selectalumno -le $cuentaalumnosdegrupo ] #Elimino usuario por usuario.
                         do
                             alumnotemp=$( /usr/local/vesta/bin/v-list-sys-users | egrep ^alumno[0-9]+.$grupoeliminar | head -n$selectalumno | tail -n1 )
                             arrayalumnos[$selectalumno]=$alumnotemp
@@ -280,11 +280,11 @@ crearusuariocustom(){
         menu
     fi
     echo ""
-    numpaquetes=$( /usr/local/vesta/bin/v-list-user-packages | wc -l )
-    numpaquetes=$(( $numpaquetes-2 ))
-    paquetes=$( /usr/local/vesta/bin/v-list-user-packages | tail -n$numpaquetes )
-    contador=1
-    while [ $contador -le $numpaquetes ]
+    numpaquetes=$( /usr/local/vesta/bin/v-list-user-packages | wc -l ) #Numero de paquetes
+    numpaquetes=$(( $numpaquetes-2 )) #Resto cabecera
+    paquetes=$( /usr/local/vesta/bin/v-list-user-packages | tail -n$numpaquetes )  #Me quedo con los paquetes
+    contador=1 #Defino el contador
+    while [ $contador -le $numpaquetes ] #Cojo los paquetes, y meto cada uno de ellos en un índice del array, además los leo.
     do
         selectorpaquete=$( /usr/local/vesta/bin/v-list-user-packages | cut -d" " -f1 | tail -n$numpaquetes | tail -n$contador | head -n1 )
         arraypaquetes[$contador]=$selectorpaquete
@@ -293,12 +293,12 @@ crearusuariocustom(){
     done
     echo ""
     read -p "¿Cuál de los planes anteriores desea aplicar? -> " numpaquete
-    paqueteusuario=${arraypaquetes[$numpaquete]}
+    paqueteusuario=${arraypaquetes[$numpaquete]} #Almaceno la entrada.
     
-    paqvalido=false ##Valida paquete -> No se admiten caracteres.
+    paqvalido=false ##Valida paquete -> No se admiten caracteres, por defecto el valor es false
     if [[ $numpaquete =~ [1-9]+ ]]
     then
-        paqvalido=true
+        paqvalido=true #Es numérico
     fi
     if [ $paqvalido == false ]
     then
@@ -312,7 +312,7 @@ crearusuariocustom(){
         read -p "El paquete seleccionado no existe, pulse intro para volver al menú."
         menu
     fi
-    /usr/local/vesta/bin/v-add-user $nomusuario $pwdusuario $emailusuario $paqueteusuario "$primernomusuario" "$segundonomusuario" 2>>/dev/null
+    /usr/local/vesta/bin/v-add-user $nomusuario $pwdusuario $emailusuario $paqueteusuario "$primernomusuario" "$segundonomusuario" 2>>/dev/null #Añado usuario, desvio errores a null.
     if [ ! $? -eq 0 ]
     then
         echo ""
@@ -334,7 +334,7 @@ eliminarusuario(){
 	listausuarios=$( ls /usr/local/vesta/data/users | grep -v ^admin )
 	read -p "Introduzca el nombre del usuario que desea eliminar: "  usuarioeliminar
 	echo $listausuarios | grep $usuarioeliminar &>>/dev/null
-	if [ ! $? -eq 0 ]
+	if [ ! $? -eq 0 ] #Si grep ha dado fallo es que no existe la entrada/usuario.
 	then
 	echo "Usuario no encontrado o no válido."
 	read -p "Introduzca un usuario válido. Pulse intro para volver al menú."
